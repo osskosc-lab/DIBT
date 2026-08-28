@@ -1,0 +1,60 @@
+{
+  "phase": "Phase 0-r1",
+  "run_mode": "smoke",
+  "started_at_utc": "2026-08-28T15:46:48.033062+00:00",
+  "completed_at_utc": "2026-08-28T15:46:48.209885+00:00",
+  "implementation_commit_sha": "SMOKE_UNFROZEN",
+  "preregistration_commit_sha": "1f13280877a0438ebceec6773e0e35aadd33c0c8",
+  "n_seeds": 3,
+  "mean_mcc_cmi": 0.7483275414972098,
+  "mean_mcc_do": 0.25819888974716115,
+  "mean_mcc_dibt": 0.25819888974716115,
+  "decision_statistics": {
+    "mean_delta_mcc_cmi": -0.49012865175004855,
+    "delta_mcc_cmi_bootstrap_95_ci": [
+      -0.8164965809277259,
+      0.09146661817751023
+    ],
+    "positive_seed_count": 1,
+    "positive_seed_fraction": 0.3333333333333333,
+    "mean_delta_mcc_do": 0.0,
+    "delta_mcc_do_bootstrap_95_ci": [
+      0.0,
+      0.0
+    ],
+    "mean_common_driver_boundary_fpr": 0.0
+  },
+  "gates": {
+    "G0_IMPLEMENTATION": true,
+    "G1_OOD_EFFECT_SIZE": false,
+    "G2_OOD_CONFIDENCE": false,
+    "G3_SEED_CONSISTENCY": false,
+    "G4_COMMON_DRIVER": true
+  },
+  "audits": {
+    "pytest": true,
+    "numerical_finiteness": true,
+    "transition_alignment": true,
+    "seed_reproducibility": true,
+    "truth_blinding": true,
+    "train_test_isolation": true,
+    "frozen_thresholds": true
+  },
+  "verdict": "STOP_OOD_EFFECT_TOO_SMALL",
+  "first_failed_gate": "G1_OOD_EFFECT_SIZE",
+  "failed_gates": [
+    "G1_OOD_EFFECT_SIZE",
+    "G2_OOD_CONFIDENCE",
+    "G3_SEED_CONSISTENCY"
+  ],
+  "warnings": [],
+  "viability": {
+    "threshold_source": "TRAIN_INTACT",
+    "train_quantile": 0.95,
+    "mean_threshold": 0.6860825604288122,
+    "mean_viability_intact_ood": 0.7506666666666666,
+    "mean_viability_boundary_removed_ood": 0.9026666666666667,
+    "primary_verdict_use": false
+  },
+  "claim_firewall": "Under the preregistered synthetic system and held-out intervention regime, a PASS supports only improved recovery of boundary-candidate causal edges and survival of the specified common-driver falsification. It does not establish a real individual, metaphysical self-boundary, consciousness, first-person privacy, or substrate-independent identity."
+}

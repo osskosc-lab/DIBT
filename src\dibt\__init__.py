@@ -10,6 +10,10 @@ __all__ = [
     "phase0",
     "phase0_r1",
     "r1_config",
+    "r2a_config",
+    "r2a_evaluation",
+    "blind_partition",
+    "phase0_r2a",
     "regeneration",
     "splits",
 ]

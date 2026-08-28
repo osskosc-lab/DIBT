@@ -104,6 +104,33 @@ python experiments/run_regeneration.py \
 Smoke outcomes are implementation diagnostics, not scientific support. A STOP
 outcome is retained without threshold or parameter tuning.
 
+## Phase 0-r2A blind partition feasibility
+
+r2A is a one-shot 10-seed development gate that runs before any r2B integrated
+confirmatory experiment. Every trial independently permutes node order. The
+blind estimator receives no generator partition, group sizes, true edges,
+boundary mask, original node order, or generator-family label.
+
+The fixed candidate concatenates observational CMI profiles with direct-
+intervention response profiles, infers the number of groups from silhouette
+scores over `k=2..5`, and compares against random, correlation-clustering, and
+DO-profile baselines. The continuation endpoint is paired ARI improvement over
+the best baseline plus all-pair end-to-end boundary-relation MCC.
+
+```bash
+python experiments/validate_phase0_r2a.py \
+  --output-dir results/phase0_r2a
+python experiments/run_phase0_r2a.py \
+  --config configs/phase0_r2a.yaml \
+  --preregistration configs/preregistration_phase0_r2a.yaml \
+  --implementation-sha <frozen-r2a-implementation> \
+  --preregistration-sha <r2a-preregistration>
+```
+
+If r2A returns `STOP_PARTITION_NOT_IDENTIFIED`, the protocol prohibits further
+estimator search and r2B execution. A PASS authorizes only a separate r2B
+preregistration; it does not establish integration value.
+
 ## Decision logic
 
 Primary support requires all of:

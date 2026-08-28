@@ -1,0 +1,44 @@
+{
+  "phase": "Phase 0-r2A",
+  "verdict": "STOP_PARTITION_NOT_IDENTIFIED",
+  "r2b_authorized": false,
+  "n_seeds": 10,
+  "mean_candidate_ari": 0.051428571428571435,
+  "mean_best_baseline_ari": 0.15676411995297443,
+  "mean_delta_ari": -0.10533554852440301,
+  "delta_ari_bootstrap_95_ci": [
+    -0.18858194505872522,
+    -0.034804760770705115
+  ],
+  "positive_seed_count": 2,
+  "positive_seed_fraction": 0.2,
+  "mean_candidate_boundary_mcc": 0.30000000000000004,
+  "baseline_mean_boundary_mcc": {
+    "random": 0.02697071903540766,
+    "correlation": -0.10833333333333332,
+    "do_profile": -0.022868403396127078
+  },
+  "best_baseline_mean_boundary_mcc": 0.02697071903540766,
+  "mean_candidate_macro_f1": 0.40555555555555556,
+  "mean_candidate_selected_k": 2.0,
+  "gates": {
+    "G0_IMPLEMENTATION": true,
+    "G1_MEAN_ARI_ADVANTAGE": false,
+    "G2_ARI_CONFIDENCE": false,
+    "G3_SEED_CONSISTENCY": false,
+    "G4_END_TO_END_BOUNDARY": true
+  },
+  "audits": {
+    "pytest": true,
+    "blind_input_contract": true,
+    "forbidden_count_blinding": true,
+    "node_permutation_equivariance": true,
+    "seed_reproducibility": true,
+    "rng_isolation": true,
+    "numerical_finiteness": true
+  },
+  "preregistration_commit_sha": "166a607ad789caa6bc61ab53f4b2978f22e02790",
+  "implementation_commit_sha": "22f2f1f01ed3cf434e911ae18d1ad61677a4a578",
+  "completed_at_utc": "2026-08-28T18:53:11.020004+00:00",
+  "claim_firewall": "This development gate concerns blind recovery of synthetic partitions only; it does not identify a real individual, self, consciousness, subjectivity, or integration value."
+}

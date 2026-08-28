@@ -1,0 +1,6 @@
+{
+  "verdict": "STOP_PARTITION_NOT_IDENTIFIED",
+  "r2b_authorized": false,
+  "summary_file": "summary.json",
+  "frozen_at_utc": "2026-08-28T18:53:11.020004+00:00"
+}
