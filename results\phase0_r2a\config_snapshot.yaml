@@ -1,0 +1,38 @@
+simulation:
+  steps: 2400
+  burn_in: 200
+  n_external: 3
+  n_boundary: 2
+  n_internal: 3
+  process_noise: 0.08
+  common_driver_strength: 0.85
+  intervention_probability: 0.22
+  intervention_amplitudes: [-1.25, -0.75, 0.75, 1.25]
+
+rng:
+  trajectory_seed_offset: 4000000
+  node_permutation_seed_offset: 5000000
+  random_baseline_seed_offset: 6000000
+
+estimation:
+  ridge: 0.01
+  permutation_repeats: 80
+  permutation_quantile: 0.99
+  min_intervention_samples: 20
+
+clustering:
+  min_clusters: 2
+  max_clusters: 5
+  exact_tie_tolerance: 1.0e-12
+
+experiment:
+  seeds: 10
+  bootstrap_repeats: 5000
+  output_dir: "results/phase0_r2a"
+
+decision:
+  min_mean_delta_ari: 0.0
+  min_bootstrap_ci_lower: 0.0
+  min_positive_seed_fraction: 0.80
+  min_candidate_mean_ari: 0.0
+  require_boundary_mcc_above_best_baseline: true
