@@ -1,0 +1,191 @@
+study:
+  title: "DIBT Phase 0-r1 — OOD Confirmatory Repair and Boundary-Specific Falsification"
+  version: "1.0"
+  mode: "confirmatory_falsification_first"
+  phase: "Phase 0-r1"
+  fixed_seed_ids: "0..29"
+  claim_level: "L0/L1 operational mechanism only"
+  policy: "STOP claiming upward, CONTINUE falsifying downward"
+  preregistration_commit_sha: "recorded after this file is committed"
+
+central_claim:
+  text: >
+    Under a held-out intervention-amplitude regime, the DIBT reference
+    estimator recovers boundary-candidate causal edges better than the
+    CMI-only baseline and survives a boundary-specific common-driver
+    falsification.
+  maximum_if_pass: >
+    Under the preregistered synthetic system and held-out intervention regime,
+    the reference estimator recovered boundary-candidate causal edges more
+    accurately than the CMI-only baseline and survived the specified
+    common-driver falsification.
+
+data_split:
+  principle: "Threshold fitting and final OOD evaluation are separated."
+  train:
+    intervention_amplitudes: [-1.0, -0.5, 0.5, 1.0]
+    rng_seed_offset: 0
+    allowed_uses:
+      - "CMI permutation-null threshold fitting"
+      - "DO intervention-permutation threshold fitting"
+      - "training-calibrated viability threshold"
+  validation:
+    intervention_amplitudes: [-1.25, -0.75, 0.75, 1.25]
+    rng_seed_offset: 1000000
+    allowed_uses:
+      - "implementation debugging before confirmatory freeze"
+      - "hyperparameter sanity checks before confirmatory freeze"
+  ood_test:
+    intervention_amplitudes: [-2.0, -1.5, 1.5, 2.0]
+    rng_seed_offset: 2000000
+    allowed_uses:
+      - "final frozen-threshold MCC evaluation"
+      - "final falsification evaluation"
+    prohibitions:
+      - "threshold fitting"
+      - "ridge tuning"
+      - "quantile tuning"
+      - "decision-gate tuning"
+
+estimators:
+  cmi_only:
+    role: "primary preregistered baseline"
+    inputs: ["transition_input_t", "next_state_t_plus_1"]
+    threshold_source: "TRAIN permutation null only"
+  do_only:
+    role: "mandatory secondary baseline"
+    inputs:
+      - "intervention_source_t"
+      - "intervention_amplitude_t"
+      - "next_state_t_plus_1"
+    threshold_source: "TRAIN intervention permutation null only"
+  dibt_reference:
+    role: "candidate estimator"
+    formula: "edge = (CMI > q_CMI_train) AND (DO_effect > q_DO_train)"
+    threshold_source: "TRAIN only"
+    ood_rule: "Apply frozen TRAIN thresholds without refitting."
+
+boundary_evaluation:
+  estimator_output: "Preserve predictions for every ordered pair."
+  evaluation_mask_source: "generator truth partition, evaluation layer only"
+  allowed_boundary_candidate_types:
+    - "E -> B"
+    - "B -> E"
+    - "B -> I"
+    - "I -> B"
+  prohibition: >
+    The partition, boundary mask, and true edges must not enter estimator
+    scoring, threshold fitting, or edge prediction.
+  primary_endpoint: "boundary-mask edge-level MCC"
+  secondary_endpoint: "all-ordered-pair causal-graph MCC"
+
+primary_hypothesis:
+  id: "H1_OOD_PRIMARY_ADVANTAGE"
+  metric: "delta_MCC_CMI = MCC_DIBT - MCC_CMI"
+  support_conditions:
+    min_mean_delta_mcc_cmi: 0.05
+    bootstrap_ci_lower_gt: 0.0
+    min_positive_seed_fraction: 0.80
+    minimum_positive_seeds: 24
+    max_common_driver_boundary_fpr: 0.10
+    all_implementation_audits_pass: true
+
+secondary_hypothesis:
+  id: "H2_INTEGRATION_VALUE"
+  metric: "delta_MCC_DO = MCC_DIBT - MCC_DO_ONLY"
+  preferred_support_conditions:
+    mean_gt: 0.0
+    bootstrap_ci_lower_gt: 0.0
+  status: "secondary_but_mandatory"
+  failure_interpretation: >
+    The reference estimator's additional value may come primarily from direct
+    intervention information rather than CMI-and-DO integration.
+
+common_driver_falsification:
+  condition: "COMMON_DRIVER"
+  primary_metric: "boundary_specific_false_positive_rate"
+  definition: >
+    Predicted edges within the boundary-candidate evaluation mask divided by
+    the total number of edges in that mask.
+  pass_condition: "mean boundary-specific FPR <= 0.10"
+  required_secondary_outputs:
+    - "all-edge prediction rate"
+    - "within-system true-edge recall"
+    - "boundary-specific FPR"
+
+seed_design:
+  n_seeds: 30
+  paired_comparison: true
+  bootstrap:
+    level: "seed"
+    repeats: 5000
+    confidence_level: 0.95
+
+viability:
+  status: "secondary_exploratory"
+  threshold_policy: >
+    Fit an internal-norm threshold from the TRAIN INTACT distribution at a
+    fixed quantile and freeze it for VALIDATION and OOD_TEST.
+  threshold_quantile: 0.95
+  primary_verdict_use: false
+  required_outputs:
+    - "viability_threshold"
+    - "threshold_source"
+    - "viability_intact_ood"
+    - "viability_boundary_removed_ood"
+
+decision_gates:
+  G0_IMPLEMENTATION:
+    requirements:
+      - "all pytest tests pass"
+      - "numerical finiteness"
+      - "transition alignment"
+      - "seed reproducibility"
+      - "truth blinding"
+      - "train/test isolation"
+      - "frozen threshold audit"
+    fail_verdict: "STOP_IMPLEMENTATION_FAILURE"
+  G1_OOD_EFFECT_SIZE:
+    requirement: "mean delta_MCC_CMI >= 0.05"
+    fail_verdict: "STOP_OOD_EFFECT_TOO_SMALL"
+  G2_OOD_CONFIDENCE:
+    requirement: "bootstrap 95% CI lower bound > 0"
+    fail_verdict: "STOP_OOD_CI_FAIL"
+  G3_SEED_CONSISTENCY:
+    requirement: "positive-seed fraction >= 0.80"
+    fail_verdict: "STOP_SEED_CONSISTENCY_FAIL"
+  G4_COMMON_DRIVER:
+    requirement: "mean boundary-specific FPR <= 0.10"
+    fail_verdict: "STOP_COMMON_DRIVER_BOUNDARY_FALSE_POSITIVE"
+  overall_pass: "G0 AND G1 AND G2 AND G3 AND G4"
+  pass_verdict: "PHASE0_R1_OOD_CONDITIONAL_SUPPORT"
+
+confirmatory_freeze:
+  rule: >
+    After the 30-seed confirmatory run begins, code, configuration, thresholds,
+    and gates must not be changed in response to results.
+  reporting: >
+    PASS and STOP outcomes are reported without suppression. The first failed
+    gate and every failed gate are both recorded.
+
+regeneration_extension:
+  track: "Phase 0-r1B"
+  execution_order: "only after the Phase 0-r1 primary verdict is frozen"
+  confirmatory_status: "secondary_mechanistic"
+  conditions:
+    - "INTACT_NO_DAMAGE"
+    - "DAMAGE_NO_REPAIR"
+    - "DAMAGE_WITH_REPAIR"
+  claim_prohibition: >
+    Do not describe the extension as regeneration of self, consciousness, or
+    identity persistence.
+
+claim_firewall:
+  forbidden_claims:
+    - "DIBT proved a real individual exists."
+    - "DIBT identified the metaphysical boundary of the self."
+    - "DIBT detected consciousness."
+    - "DIBT detected first-person privacy."
+    - "DIBT proved substrate-independent identity."
+    - "Regeneration proves persistence of self."
+

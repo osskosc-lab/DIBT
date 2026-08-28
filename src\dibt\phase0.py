@@ -8,7 +8,11 @@ import pandas as pd
 
 from .config import Config
 from .dynamics import SimResult, simulate
-from .estimators import estimate_baseline, estimate_dibt_reference
+from .estimators import (
+    estimate_baseline,
+    estimate_dibt_reference,
+    make_estimator_input,
+)
 from .metrics import (
     bootstrap_mean_ci,
     edge_mcc,
@@ -59,16 +63,30 @@ def run_phase0(cfg: Config) -> tuple[pd.DataFrame, dict]:
             for sim in (intact, common, removed)
         )
 
-        baseline = estimate_baseline(intact, cfg.estimation, seed)
-        dibt = estimate_dibt_reference(intact, cfg.estimation, seed)
+        intact_data = make_estimator_input(
+            intact.transition_inputs,
+            intact.next_states,
+            intact.intervention_index,
+            intact.intervention_value,
+            split_name="TRAIN",
+        )
+        baseline = estimate_baseline(intact_data, cfg.estimation, seed)
+        dibt = estimate_dibt_reference(intact_data, cfg.estimation, seed)
         baseline_mcc = edge_mcc(intact.true_edges, baseline.edges)
         dibt_mcc = edge_mcc(intact.true_edges, dibt.edges)
 
+        common_data = make_estimator_input(
+            common.transition_inputs,
+            common.next_states,
+            common.intervention_index,
+            common.intervention_value,
+            split_name="TRAIN",
+        )
         common_baseline = estimate_baseline(
-            common, cfg.estimation, seed + 10_000
+            common_data, cfg.estimation, seed + 10_000
         )
         common_dibt = estimate_dibt_reference(
-            common, cfg.estimation, seed + 10_000
+            common_data, cfg.estimation, seed + 10_000
         )
 
         rows.append(

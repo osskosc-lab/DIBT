@@ -13,6 +13,12 @@ def test_transition_arrays_share_exact_alignment():
     assert result.intervention_value.shape == (120,)
 
 
+def test_transition_alignment():
+    result = simulate(simulation_config(steps=90), seed=13)
+    assert len(result.transition_inputs) == len(result.next_states) == 90
+    assert len(result.intervention_index) == len(result.intervention_value) == 90
+
+
 def test_intervention_is_applied_only_to_labeled_input_coordinate():
     result = simulate(
         simulation_config(steps=80, intervention_probability=1.0), seed=2

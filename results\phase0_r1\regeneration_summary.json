@@ -1,0 +1,27 @@
+{
+  "track": "Phase 0-r1B",
+  "status": "secondary_mechanistic",
+  "executed_after_primary_freeze": true,
+  "completed_at_utc": "2026-08-28T15:49:19.040652+00:00",
+  "conditions": {
+    "INTACT_NO_DAMAGE": {
+      "mean_recovery_time_after_damage": 301.0,
+      "mean_boundary_edge_function_recovery": 1.0,
+      "mean_ood_response_recovery_ratio": 1.0,
+      "mean_post_repair_viability": 0.7612222222222224
+    },
+    "DAMAGE_NO_REPAIR": {
+      "mean_recovery_time_after_damage": null,
+      "mean_boundary_edge_function_recovery": 0.0,
+      "mean_ood_response_recovery_ratio": 0.34066532213808587,
+      "mean_post_repair_viability": 0.9002222222222224
+    },
+    "DAMAGE_WITH_REPAIR": {
+      "mean_recovery_time_after_damage": 570.0,
+      "mean_boundary_edge_function_recovery": 1.0,
+      "mean_ood_response_recovery_ratio": 0.6706155828053206,
+      "mean_post_repair_viability": 0.8617777777777779
+    }
+  },
+  "claim_firewall": "Damage/repair dynamics are a synthetic mechanism diagnostic and do not establish regeneration of self, consciousness, or identity."
+}

@@ -1,0 +1,7 @@
+{
+  "verdict": "PHASE0_R1_OOD_CONDITIONAL_SUPPORT",
+  "implementation_commit_sha": "012ff5fd67b9d51215f295e6e951ae150b02fbfd",
+  "preregistration_commit_sha": "1f13280877a0438ebceec6773e0e35aadd33c0c8",
+  "frozen_at_utc": "2026-08-28T15:49:10.266495+00:00",
+  "summary_file": "summary.json"
+}

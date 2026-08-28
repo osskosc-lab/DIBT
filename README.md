@@ -66,6 +66,44 @@ For a short runtime check:
 python experiments/run_phase0.py --config configs/smoke.yaml
 ```
 
+## Phase 0-r1 held-out protocol
+
+Phase 0-r1 repairs the original same-trajectory evaluation. It uses independent
+TRAIN, VALIDATION, and OOD_TEST RNG streams and intervention amplitudes. CMI and
+DO thresholds are fit on TRAIN INTACT data only and frozen before OOD scoring.
+The held-out comparison includes CMI-only, DO-only, and the CMI∧DO reference
+estimator.
+
+The primary endpoint is MCC inside an evaluation-only boundary-candidate mask
+(`E↔B` and `B↔I`). Full observed causal-graph MCC remains a separate secondary
+output. The generator partition and edge truth never enter estimator inputs.
+
+Run the r1 tests and a smoke check:
+
+```bash
+python experiments/validate_phase0_r1.py \
+  --output-dir results/phase0_r1_smoke
+python experiments/run_phase0_r1.py \
+  --config configs/phase0_r1_smoke.yaml \
+  --preregistration configs/preregistration_phase0_r1.yaml \
+  --commit-sha SMOKE_UNFROZEN \
+  --preregistration-sha <preregistration-commit> \
+  --mode smoke
+```
+
+The confirmatory command requires the frozen implementation commit SHA and
+refuses to overwrite an existing frozen result. After the primary verdict is
+frozen, the secondary damage/repair extension can run with:
+
+```bash
+python experiments/run_regeneration.py \
+  --config configs/phase0_r1.yaml \
+  --output-dir results/phase0_r1
+```
+
+Smoke outcomes are implementation diagnostics, not scientific support. A STOP
+outcome is retained without threshold or parameter tuning.
+
 ## Decision logic
 
 Primary support requires all of:
@@ -99,17 +137,28 @@ DIBT_Phase0_Starter/
 ├── pyproject.toml
 ├── configs/
 │   ├── phase0.yaml
+│   ├── phase0_r1.yaml
+│   ├── phase0_r1_smoke.yaml
 │   ├── preregistration.yaml
+│   ├── preregistration_phase0_r1.yaml
 │   └── smoke.yaml
 ├── experiments/
-│   └── run_phase0.py
+│   ├── run_phase0.py
+│   ├── run_phase0_r1.py
+│   ├── run_regeneration.py
+│   └── validate_phase0_r1.py
 ├── src/dibt/
 │   ├── __init__.py
 │   ├── config.py
 │   ├── dynamics.py
 │   ├── estimators.py
 │   ├── metrics.py
-│   └── phase0.py
+│   ├── phase0.py
+│   ├── phase0_r1.py
+│   ├── evaluation.py
+│   ├── decision.py
+│   ├── splits.py
+│   └── regeneration.py
 └── tests/
     ├── test_alignment.py
     ├── test_estimators.py
@@ -117,4 +166,3 @@ DIBT_Phase0_Starter/
     ├── test_nulls.py
     └── test_reproducibility.py
 ```
-

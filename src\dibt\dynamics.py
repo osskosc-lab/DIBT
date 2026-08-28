@@ -18,6 +18,7 @@ class SimResult:
     intervention_index: np.ndarray
     intervention_value: np.ndarray
     true_edges: np.ndarray
+    causal_edges: np.ndarray
     partition: np.ndarray
     adjacency: np.ndarray
     condition: str
@@ -155,6 +156,8 @@ def simulate(
         intervention_index=np.asarray(intervention_indices, dtype=int),
         intervention_value=np.asarray(intervention_values, dtype=float),
         true_edges=true_edges,
+        causal_edges=(np.abs(adjacency) > 0.0)
+        & ~np.eye(n_variables, dtype=bool),
         partition=partition,
         adjacency=adjacency,
         condition=condition,
