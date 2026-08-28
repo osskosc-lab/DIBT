@@ -1,0 +1,48 @@
+simulation:
+  steps: 500
+  burn_in: 80
+  n_external: 3
+  n_boundary: 2
+  n_internal: 3
+  process_noise: 0.08
+  common_driver_strength: 0.85
+  intervention_probability: 0.28
+
+splits:
+  train:
+    intervention_amplitudes: [-1.0, -0.5, 0.5, 1.0]
+    seed_offset: 0
+  validation:
+    intervention_amplitudes: [-1.25, -0.75, 0.75, 1.25]
+    seed_offset: 1000000
+  ood_test:
+    intervention_amplitudes: [-2.0, -1.5, 1.5, 2.0]
+    seed_offset: 2000000
+
+estimation:
+  ridge: 0.01
+  permutation_repeats: 12
+  permutation_quantile: 0.95
+  min_intervention_samples: 8
+
+experiment:
+  seeds: 3
+  bootstrap_repeats: 200
+  output_dir: "results/phase0_r1_smoke"
+
+decision:
+  min_mean_delta_mcc_cmi: 0.05
+  min_bootstrap_ci_lower: 0.0
+  min_positive_seed_fraction: 0.80
+  max_common_driver_boundary_fpr: 0.10
+
+viability:
+  train_quantile: 0.95
+
+regeneration:
+  steps: 300
+  burn_in: 50
+  damage_fraction: 0.3333333333
+  repair_fraction: 0.6666666667
+  recovery_fraction: 0.90
+  damage_factor: 0.0
