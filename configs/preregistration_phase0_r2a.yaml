@@ -1,0 +1,137 @@
+study:
+  title: "DIBT Phase 0-r2A — Blind Partition Feasibility"
+  version: "1.0"
+  mode: "fixed_development_gate"
+  predecessor_result_commit: "bf4cb50a0687c54eee3c5653bb6f60e7af37f8f1"
+  claim_level: "synthetic blind partition and boundary-relation recovery only"
+  policy: >
+    Run r2A once with the fixed procedure below. If it fails, stop without
+    searching additional estimators and do not begin r2B.
+
+objective:
+  text: >
+    Determine whether a fixed, truth-blinded partition estimator can recover
+    synthetic E/B/I structure better than random, correlation-clustering, and
+    DO-response-profile baselines when node order is independently permuted.
+
+development_design:
+  generator_family: "F0 linear/tanh reference only"
+  seeds: 10
+  seed_ids: "0..9"
+  trajectory_seed_offset: 4000000
+  node_permutation_seed_offset: 5000000
+  intervention_amplitudes: [-1.25, -0.75, 0.75, 1.25]
+  intervention_probability: 0.22
+  steps: 2400
+  burn_in: 200
+  bootstrap_repeats: 5000
+  future_r2b_isolation: >
+    These trajectories and RNG streams must not be reused in a future r2B
+    confirmatory run.
+
+blind_input_contract:
+  allowed:
+    - "permuted transition_input_t"
+    - "permuted next_state_t_plus_1"
+    - "permuted intervention_target_t"
+    - "intervention_amplitude_t"
+  forbidden:
+    - "true partition"
+    - "n_external, n_boundary, or n_internal"
+    - "true boundary-candidate mask"
+    - "true edges"
+    - "unpermuted node order"
+    - "generator-family name"
+  output:
+    - "estimated unlabeled partition"
+    - "estimated role per node"
+    - "all-ordered-pair edge prediction"
+    - "estimated all-pair boundary relation"
+
+fixed_candidate:
+  name: "OBS_DO_PROFILE_AGGLOMERATIVE"
+  observational_profile: >
+    For each node, concatenate its outgoing and incoming absolute lagged
+    Gaussian-CMI scores against all other nodes.
+  intervention_profile: >
+    For each node, use its standardized direct-intervention response vector to
+    every possible target.
+  fusion: >
+    Z-standardize every profile column and concatenate observational and
+    intervention profiles with equal block weight.
+  clustering: >
+    Deterministic average-linkage agglomerative clustering on Euclidean profile
+    distance. Infer k by maximum mean silhouette over k=2..min(5,n-1), choosing
+    the smaller k on an exact tie.
+  role_assignment: >
+    Label the cluster with the largest summed bidirectional cross-cluster DO
+    response as boundary. Of the remaining clusters, label the one with the
+    larger net outgoing-minus-incoming DO flow to the boundary as external;
+    label the remainder internal. If k is not 3, unmatched clusters retain an
+    auxiliary role and count against role and boundary-relation metrics.
+  edge_rule: >
+    Fit CMI and DO null thresholds on the same r2A development trajectory and
+    retain the frozen r1 CMI-AND-DO edge rule for diagnostic edge output only.
+    Edge performance is not the r2A continuation gate.
+
+baselines:
+  random_partition:
+    k_policy: "uniform deterministic draw from 2..min(5,n-1)"
+    assignment: "uniform random cluster assignment with every cluster nonempty"
+  correlation_clustering:
+    profile: "absolute contemporaneous state-correlation rows"
+    clustering: "same agglomerative and silhouette k inference"
+  do_profile_clustering:
+    profile: "standardized intervention-response rows only"
+    clustering: "same agglomerative and silhouette k inference"
+  oracle_partition_do_only:
+    status: "diagnostic upper bound only; excluded from every support gate"
+
+evaluation:
+  partition_primary: "Adjusted Rand Index"
+  role_secondary: "macro-F1 after evaluation-only optimal label matching"
+  end_to_end_boundary: >
+    MCC across every ordered node pair between the estimated boundary relation
+    and the true boundary relation. The true mask is a label only and never
+    narrows the prediction space.
+  graph_secondary: "all-ordered-pair causal-graph MCC"
+  degeneracy:
+    - "estimated number of clusters"
+    - "largest-cluster fraction"
+    - "predicted boundary-relation rate"
+    - "predicted edge rate"
+
+implementation_gate:
+  requirements:
+    - "all tests pass"
+    - "blind estimator source has no truth fields"
+    - "node-permutation equivariance"
+    - "seed reproducibility"
+    - "r2A RNG isolation from r1 and future r2B"
+    - "all numeric outputs finite"
+
+continuation_gate:
+  primary_delta: "ARI_candidate - max(ARI_random, ARI_correlation, ARI_DO_profile)"
+  requirements:
+    min_mean_delta_ari: 0.0
+    bootstrap_95ci_lower_gt: 0.0
+    min_positive_seed_fraction: 0.80
+    candidate_mean_ari_gt: 0.0
+    end_to_end_boundary_mcc_gt_best_baseline_mean: true
+  pass_label: "PHASE0_R2A_BLIND_PARTITION_FEASIBLE"
+  fail_label: "STOP_PARTITION_NOT_IDENTIFIED"
+  authorization_if_pass: >
+    A PASS authorizes writing a separate preregistration for r2B. It does not
+    itself support integrated-estimator value or generator/OOD robustness.
+
+claim_firewall:
+  maximum_if_pass: >
+    In the fixed F0 development setting, a truth-blinded profile-clustering
+    procedure recovered synthetic node partitions and boundary relations better
+    than the preregistered blind baselines.
+  forbidden:
+    - "a real individual was discovered"
+    - "the metaphysical boundary of a self was identified"
+    - "consciousness or subjectivity was detected"
+    - "r2B integration value was established"
+
