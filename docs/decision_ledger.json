@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "program": "DIBT consciousness-AI operations",
+  "policy": "BUILD upward only after FALSIFYING downward",
+  "claim_firewall": {
+    "maximum_current_level": "L1 operational, synthetic, conditional",
+    "forbidden_levels": ["L5 consciousness/qualia/subjectivity", "L6 soul/identity/metaphysics"]
+  },
+  "evidence_state": [
+    {
+      "id": "DIBT_PHASE0_MAIN",
+      "location": "main",
+      "status": "IMPLEMENTED_SCAFFOLD",
+      "supports": "Synthetic boundary-edge recovery falsification framework",
+      "does_not_support": ["consciousness", "qualia", "soul", "metaphysical identity"]
+    },
+    {
+      "id": "DIBT_PHASE0_R1",
+      "location": "PR #1",
+      "url": "https://github.com/osskosc-lab/DIBT/pull/1",
+      "status": "OPEN_MERGEABLE_FROZEN_RESULT_REQUIRES_VERSIONED_ARTIFACT_AUDIT",
+      "primary_comparison": "DIBT reference vs CMI-only",
+      "integration_comparison": "DIBT reference vs DO-only",
+      "interpretation": "Do not infer CMI-and-DO integration value from an outcome where DO-only matches the reference estimator."
+    }
+  ],
+  "current_bottleneck": {
+    "id": "H2_R2_INTEGRATION_VALUE",
+    "question": "Can a blind integrated CMI-and-DO estimator outperform a capacity-matched DO-only estimator when intervention access is incomplete or noisy?",
+    "claim_level": "L1 operational mechanism only",
+    "current_status": "UNTESTED"
+  },
+  "next_experiment": {
+    "phase": "0-r2",
+    "primary_metric": "delta_MCC_DO = MCC_integrated - MCC_DO_only",
+    "baseline": "Capacity-matched DO-only oracle",
+    "falsification": "ORACLE_DO control",
+    "required_generator_families": [
+      "clean_intervention_ceiling_control",
+      "partial_coverage_intervention",
+      "intervention_amplitude_noise"
+    ],
+    "required_ood": [
+      "held-out intervention amplitudes",
+      "held-out generator-family parameter regime"
+    ],
+    "required_audits": [
+      "truth blinding",
+      "train/test isolation",
+      "leakage",
+      "seed reproducibility",
+      "capacity matching",
+      "common-driver boundary false positives"
+    ],
+    "minimum_seed_design": "30 paired seeds per preregistered family",
+    "support_rule": [
+      "all implementation audits pass",
+      "mean delta_MCC_DO > 0",
+      "paired seed-bootstrap 95% CI lower bound > 0",
+      "positive effect in preregistered incomplete/noisy-intervention families",
+      "common-driver gate passes"
+    ],
+    "stop_verdict": "NOT_SUPPORTED_INTEGRATION_VALUE"
+  },
+  "phase_transition_rule": "No higher phase begins without a frozen decision note for the preceding phase; a PASS never raises the claim level automatically."
+}
