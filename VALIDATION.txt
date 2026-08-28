@@ -1,0 +1,60 @@
+DIBT PHASE 0 STARTER — LOCAL VALIDATION
+Date: 2026-08-29
+Environment: Windows / Python 3
+
+TESTS
+Command: python -m pytest -q
+Result: PASS
+
+.............                                                            [100%]
+13 passed in 0.39s
+
+SMOKE RUN
+Command: python experiments/run_phase0.py --config configs/smoke.yaml
+Result: PASS (process exit code 0)
+
+{
+  "mean_delta_mcc": 0.22353479633287124,
+  "bootstrap_95_ci": [
+    0.10556111258358869,
+    0.316515138991168
+  ],
+  "mean_dibt_mcc": 0.8711904712796273,
+  "mean_baseline_mcc": 0.6476556749467561,
+  "mean_common_driver_dibt_edge_rate": 0.029761904761904757,
+  "mean_viability_intact": 1.0,
+  "mean_viability_boundary_removed": 1.0,
+  "mean_internal_variance_intact": 0.05213877861789032,
+  "mean_internal_variance_boundary_removed": 0.029557564633826357,
+  "gates": {
+    "delta_mcc_effect": true,
+    "delta_mcc_ci": true,
+    "common_driver": true
+  },
+  "audits": {
+    "numerical_finiteness": true,
+    "transition_alignment": true,
+    "seed_reproducibility": true
+  },
+  "diagnostics": {
+    "viability_radius_informative": false,
+    "warnings": [
+      "viability_radius is at least sqrt(n_internal); under tanh-bounded states, viability_fraction is structurally 1.0 and cannot discriminate intact from boundary-removal conditions"
+    ]
+  },
+  "verdict": "PHASE0_CONDITIONAL_SUPPORT"
+}
+
+INTERPRETATION
+This was the 3-seed smoke configuration, not the preregistered 30-seed
+confirmatory run. Its verdict verifies that the implementation executes and
+that the small run crosses the configured gates; it is not a confirmatory
+scientific conclusion.
+
+The supplied viability radius (2.5) exceeds sqrt(3), while tanh bounds each of
+the three internal coordinates to [-1, 1]. The viability fraction is therefore
+structurally 1.0 in both conditions and is not an informative mechanism
+diagnostic at this setting. Internal variance remains reported as diagnostic.
+
+Passing Phase 0 supports synthetic boundary-edge recovery only. It does not
+establish consciousness, selfhood, subjectivity, soul, or metaphysical identity.

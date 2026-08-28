@@ -1,0 +1,57 @@
+study:
+  title: "DIBT Phase 0 — Known Boundary Recovery and Common-Driver Falsification"
+  version: "0.1"
+  mode: "confirmatory_falsification_first"
+  claim_level: "L0/L1 operational mechanism only"
+  policy: "STOP claiming upward, CONTINUE falsifying downward"
+
+research_question:
+  text: >
+    In a synthetic open dynamical system with a known causal boundary, with
+    spatial resolution, temporal window, intervention set and viability region
+    fixed in advance, does the DIBT reference estimator recover true boundary
+    edges more accurately than a matched dynamic conditional-dependence
+    baseline and reject a common-driver false boundary?
+
+primary_endpoint:
+  name: "edge_level_MCC"
+  effect: "delta_MCC = MCC_DIBT - MCC_baseline"
+  support_rule:
+    mean_delta_mcc_min: 0.05
+    bootstrap_ci_lower_gt: 0.0
+
+primary_baseline:
+  family: "dynamic conditional-mutual-information Markov-blanket estimator"
+  implementation: "Gaussian partial-correlation CMI approximation"
+  note: >
+    This is a concrete reference implementation of the baseline family, not
+    a claim that the DIBT paper uniquely fixes a Gaussian estimator.
+
+primary_falsification:
+  condition: "COMMON_DRIVER"
+  rule:
+    max_mean_predicted_edge_rate: 0.10
+  note: >
+    The numeric 0.10 false-positive gate is an implementation choice added
+    here to operationalize the paper's qualitative STOP condition.
+
+secondary_mechanism_check:
+  condition: "BOUNDARY_REMOVAL"
+  outcomes:
+    - "viability_fraction"
+    - "internal_variance"
+  confirmatory_status: "diagnostic_only"
+
+sample:
+  seeds: 30
+  bootstrap_repeats: 5000
+
+claim_firewall:
+  forbidden_inferences:
+    - "consciousness"
+    - "qualia"
+    - "first_person_subject"
+    - "soul"
+    - "metaphysical_identity"
+    - "post_mortem_continuity"
+    - "substrate_independent_selfhood"
