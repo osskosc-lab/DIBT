@@ -1,0 +1,11 @@
+{
+  "captured_at_utc": "2026-08-28T15:49:10.284970+00:00",
+  "python": "3.13.13 (tags/v3.13.13:01104ce, Apr  7 2026, 19:25:48) [MSC v.1944 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "packages": {
+    "numpy": "2.4.4",
+    "pandas": "3.0.3",
+    "PyYAML": "6.0.3",
+    "pytest": "8.4.2"
+  }
+}

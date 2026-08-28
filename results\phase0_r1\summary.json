@@ -1,0 +1,56 @@
+{
+  "phase": "Phase 0-r1",
+  "run_mode": "confirmatory",
+  "started_at_utc": "2026-08-28T15:49:06.270800+00:00",
+  "completed_at_utc": "2026-08-28T15:49:10.266495+00:00",
+  "implementation_commit_sha": "012ff5fd67b9d51215f295e6e951ae150b02fbfd",
+  "preregistration_commit_sha": "1f13280877a0438ebceec6773e0e35aadd33c0c8",
+  "n_seeds": 30,
+  "mean_mcc_cmi": 0.7869962071465497,
+  "mean_mcc_do": 1.0,
+  "mean_mcc_dibt": 1.0,
+  "decision_statistics": {
+    "mean_delta_mcc_cmi": 0.21300379285345022,
+    "delta_mcc_cmi_bootstrap_95_ci": [
+      0.1845317372546629,
+      0.24385770145422514
+    ],
+    "positive_seed_count": 30,
+    "positive_seed_fraction": 1.0,
+    "mean_delta_mcc_do": 0.0,
+    "delta_mcc_do_bootstrap_95_ci": [
+      0.0,
+      0.0
+    ],
+    "mean_common_driver_boundary_fpr": 0.0
+  },
+  "gates": {
+    "G0_IMPLEMENTATION": true,
+    "G1_OOD_EFFECT_SIZE": true,
+    "G2_OOD_CONFIDENCE": true,
+    "G3_SEED_CONSISTENCY": true,
+    "G4_COMMON_DRIVER": true
+  },
+  "audits": {
+    "pytest": true,
+    "numerical_finiteness": true,
+    "transition_alignment": true,
+    "seed_reproducibility": true,
+    "truth_blinding": true,
+    "train_test_isolation": true,
+    "frozen_thresholds": true
+  },
+  "verdict": "PHASE0_R1_OOD_CONDITIONAL_SUPPORT",
+  "first_failed_gate": null,
+  "failed_gates": [],
+  "warnings": [],
+  "viability": {
+    "threshold_source": "TRAIN_INTACT",
+    "train_quantile": 0.95,
+    "mean_threshold": 0.6585356165041613,
+    "mean_viability_intact_ood": 0.7550972222222221,
+    "mean_viability_boundary_removed_ood": 0.9005833333333333,
+    "primary_verdict_use": false
+  },
+  "claim_firewall": "Under the preregistered synthetic system and held-out intervention regime, a PASS supports only improved recovery of boundary-candidate causal edges and survival of the specified common-driver falsification. It does not establish a real individual, metaphysical self-boundary, consciousness, first-person privacy, or substrate-independent identity."
+}
